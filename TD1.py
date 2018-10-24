@@ -32,7 +32,7 @@ X_train1, X_test1, y_train1, y_test1 = train_test_split(data, labels, test_size=
 plt.scatter(X_train1[:,0],X_train1[:,1],c=cmp[y_train1],s=50,edgecolors='none')
 plt.scatter(X_test1[:,0],X_test1[:,1],c='none',s=50,edgecolors=cmp[y_test1])
 plt.show()
-
+###TODO : read linearDiscrimant Analysis scikit learn
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 lda = LinearDiscriminantAnalysis()
 
@@ -48,12 +48,13 @@ nx, ny = 200, 100
 x_min, x_max = plt.xlim()
 y_min, y_max = plt.ylim()
 xx, yy = np.meshgrid(np.linspace(x_min, x_max, nx),np.linspace(y_min, y_max, ny))
-Z = lda.predict_proba(np.c_[xx.ravel(), yy.ravel()])
+Z = lda.predict_proba(np.c_[xx.ravel(), yy.ravel()]) ##TODO : check np.c_
 Z = Z[:, 1].reshape(xx.shape)
 plt.contour(xx, yy, Z, [0.5])
 plt.show()
 
 #NN
+#TODO : check MLPClassifier
 from sklearn.neural_network import MLPClassifier
 clf = MLPClassifier(solver='lbfgs', alpha=1)
 
