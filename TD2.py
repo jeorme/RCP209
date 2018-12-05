@@ -27,44 +27,64 @@ labels = np.concatenate((l1c, l2c))
 from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(data, labels, test_size=0.5)
 
+plt.ion()
+fig = plt.figure()
 cmp = np.array(['r','g'])
 plt.scatter(X_train[:,0],X_train[:,1],c=cmp[y_train],s=50,edgecolors='none')
-plt.show()
 plt.scatter(X_test[:,0],X_test[:,1],c='none',s=50,edgecolors=cmp[y_test])
-plt.show()
+
 
 from sklearn.neural_network import MLPClassifier
 clf = MLPClassifier(solver='lbfgs', alpha=1)
-# KFold pour différentes valeurs de k
+#KFold pour différentes valeurs de k
 from sklearn.model_selection import KFold
 # valeurs de k
-kcvfs=np.array([2, 3, 5, 7, 10, 13, 16, 20,400])
+kcvfs=np.array([2, 3, 5, 7, 10, 13, 16, 20, 40])
 # préparation des listes pour stocker les résultats
 kcvscores = list()
 kcvscores_std = list()
-test = list()
+testscores = list()
+testscores_std = list()
+these_test_scores = list()
 
 for kcvf in kcvfs:    # pour chaque valeur de k
-  kf = KFold(n_splits=kcvf)
-  these_scores = list()
-  test_scores = list()
-  # apprentissage puis évaluation d'un modèle sur chaque split
-  for train_idx, test_idx in kf.split(X_train):
-    clf.fit(X_train[train_idx], y_train[train_idx])
-    these_scores.append(clf.score(X_train[test_idx], y_train[test_idx]))
-  # calcul de la moyenne et de l'écart-type des performances obtenues
-  kcvscores.append(np.mean(these_scores))
-  kcvscores_std.append(np.std(these_scores))
-  test.append(clf.score(X_test[:], y_test[:]))
-  print("k fold : "+str(kcvf)+" done")
+   kf = KFold(n_splits=kcvf)
+   these_scores = list()
+   # apprentissage puis évaluation d'un modèle sur chaque split
+   for train_idx, test_idx in kf.split(X_train):
+     clf.fit(X_train[train_idx], y_train[train_idx])
+     these_scores.append(clf.score(X_train[test_idx], y_train[test_idx]))
+     these_test_scores.append(clf.score(X_test, y_test))
+   # calcul de la moyenne et de l'écart-type des performances obtenues
+   kcvscores.append(np.mean(these_scores))
+   kcvscores_std.append(np.std(these_scores))
+   testscores.append(np.mean(these_test_scores))
+   testscores_std.append(np.std(these_test_scores))
 
 # création de np.array à partir des listes
-kcvscores, kcvscores_std,test_plot = np.array(kcvscores), np.array(kcvscores_std), np.array(test)
+kcvscores, kcvscores_std = np.array(kcvscores), np.array(kcvscores_std)
+testscores, testscores_std = np.array(testscores), np.array(testscores_std)
+fig = plt.figure()
 plt.plot(kcvfs, kcvscores, 'b')
-plt.show()
-plt.plot(kcvfs, test_plot, 'b')
-plt.show()
 plt.plot(kcvfs, kcvscores+kcvscores_std, 'b--')
-plt.show()
 plt.plot(kcvfs, kcvscores-kcvscores_std, 'b--')
-plt.show()
+plt.plot(kcvfs, testscores, 'g')
+plt.plot(kcvfs, testscores+testscores_std, 'g--')
+plt.plot(kcvfs, testscores-testscores_std, 'g--')
+
+### test LOO
+from sklearn.model_selection import LeaveOneOut
+loo = LeaveOneOut()
+loo.get_n_splits(X_train)
+
+loo_these_score = list()
+
+
+for train_index, test_index in loo.split(X_train):
+  clf.fit(X_train[train_index],y_train[train_index])
+  loo_these_score.append(clf.score(X_train[test_index],y_train[test_index]))
+
+loo_score_std = np.std(loo_these_score)
+loo_score = np.mean(loo_these_score)
+
+print(loo_score,loo_score_std)
