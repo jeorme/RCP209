@@ -2,7 +2,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 # mode interactif
-#plt.ion()    # si ce n'est déjà fait
+plt.ion()    # si ce n'est déjà fait
 
 # définir matrices de rotation et de dilatation
 rot = np.array([[0.94, -0.34], [0.34, 0.94]])

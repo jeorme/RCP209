@@ -15,7 +15,7 @@ graph = pydotplus.graph_from_dot_data(dot_data)
 graph.write_pdf("diabetes.pdf")
 print((clf.score(X_train,y_train),clf.score(X_test,y_test)))
 from sklearn.model_selection import GridSearchCV
-tuned_parameters = {'max_depth':[3,4,6,7,8,9,10]}
+tuned_parameters = {'max_depth':range(2,30)}
 clfCV = GridSearchCV(tree.DecisionTreeClassifier(), tuned_parameters, cv=5)
 clfCV.fit(X_train,y_train)
 print(clfCV.best_params_)
