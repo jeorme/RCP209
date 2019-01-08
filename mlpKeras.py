@@ -34,15 +34,3 @@ model.fit(X_train, Y_train,batch_size=batch_size, epochs=nb_epoch,verbose=1, cal
 scores = model.evaluate(X_test, Y_test, verbose=0)
 print("%s: %.2f%%" % (model.metrics_names[0], scores[0]*100))
 print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
-
-from keras.models import model_from_yaml
-def saveModel(model, savename):
-  # serialize model to YAML
-  model_yaml = model.to_yaml()
-  with open(savename+".yaml", "w") as yaml_file:
-    yaml_file.write(model_yaml)
-    print("Yaml Model ",savename,".yaml saved to disk")
-  # serialize weights to HDF5
-  model.save_weights(savename+".h5")
-  print("Weights ",savename,".h5 saved to disk")
-

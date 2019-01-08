@@ -2,6 +2,7 @@ from keras.datasets import mnist
 from keras.optimizers import SGD
 
 from kerasHelper import convertToCat
+from kerasHelper import saveModel
 
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
 x_train = x_train.reshape(x_train.shape[0], 28, 28, 1)
@@ -32,9 +33,10 @@ model.add(Dense(10, name='fc2',activation='softmax'))
 print(model.summary())
 model.compile(loss='categorical_crossentropy', optimizer=SGD(.5), metrics=['accuracy'])
 #training
-model.fit(x_train, y_train,batch_size=300, epochs=10,verbose=1)
+model.fit(x_train, y_train,batch_size=3000, epochs=1,verbose=1)
 #score
 scores = model.evaluate(x_test, y_test, verbose=0)
 print("%s: %.2f%%" % (model.metrics_names[0], scores[0]*100))
 print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
+saveModel(model,"cnn")
 
